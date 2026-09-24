@@ -1,196 +1,458 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme-init>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rohini R · Portfolio</title>
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <!-- External CSS -->
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rohini R — Software Developer</title>
+
+<!--
+  Rohini R — portfolio. Content is filled in from your GitHub projects.
+  To tweak later: the hero copy is in the .hero block, projects in
+  <section id="work">, bio + toolkit in <section id="about">, and the
+  animated terminal text in the `lines` array near the bottom.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* ---- Tokens: light is the base, dark via media query + toggle ---- */
+  :root {
+    --bg:        #F8F9FB;
+    --surface:   #FFFFFF;
+    --surface-2: #EEF1F5;
+    --text:      #16202B;
+    --muted:     #5B6B7C;
+    --border:    #DCE2EA;
+    --accent:    #1E40AF;
+    --accent-ink:#FFFFFF;
+    --shadow:    0 1px 2px rgba(22,32,43,.06);
+
+    --sans:  "IBM Plex Sans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    --disp:  "Bricolage Grotesque", Georgia, serif;
+    --mono:  "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    color-scheme: light dark;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:        #0E141B;
+      --surface:   #161E27;
+      --surface-2: #1E2833;
+      --text:      #E7ECF2;
+      --muted:     #93A1B2;
+      --border:    #26313D;
+      --accent:    #3B82F6;
+      --accent-ink:#0A1020;
+      --shadow:    0 1px 2px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:        #0E141B;
+    --surface:   #161E27;
+    --surface-2: #1E2833;
+    --text:      #E7ECF2;
+    --muted:     #93A1B2;
+    --border:    #26313D;
+    --accent:    #3B82F6;
+    --accent-ink:#0A1020;
+    --shadow:    0 1px 2px rgba(0,0,0,.4);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: calc(72px + env(safe-area-inset-top, 0px)); }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .wrap { width: 100%; max-width: 940px; margin: 0 auto; padding: 0 24px; }
+
+  a { color: inherit; }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+  /* ---- Nav ---- */
+  header.nav {
+    position: sticky; top: 0; z-index: 50;
+    padding-top: env(safe-area-inset-top, 0px);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-in { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .mark {
+    font-family: var(--disp); font-weight: 800; font-size: 20px; letter-spacing: -.02em;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 9px;
+  }
+  .mark .dot { width: 10px; height: 10px; border-radius: 3px; background: var(--accent); display: inline-block; }
+  .nav-links { display: flex; align-items: center; gap: 26px; }
+  .nav-links a { text-decoration: none; color: var(--muted); font-size: 15px; font-weight: 500; transition: color .15s; }
+  .nav-links a:hover { color: var(--text); }
+  .toggle {
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    width: 38px; height: 38px; border-radius: 9px; cursor: pointer; font-size: 17px;
+    display: grid; place-items: center; transition: border-color .15s, color .15s;
+  }
+  .toggle:hover { color: var(--text); border-color: var(--muted); }
+  @media (max-width: 620px) { .nav-links .link { display: none; } }
+
+  /* ---- Hero ---- */
+  .hero { padding: 84px 0 72px; }
+  .hero .eyebrow { color: var(--muted); font-size: 15px; margin: 0 0 22px; font-weight: 500; }
+  .hero h1 {
+    font-family: var(--disp); font-weight: 800;
+    font-size: clamp(2.6rem, 7vw, 4.6rem); line-height: 1.02; letter-spacing: -.035em;
+    margin: 0 0 22px; max-width: 15ch;
+  }
+  .hero .lede { font-size: clamp(1.05rem, 2.4vw, 1.3rem); color: var(--muted); max-width: 54ch; margin: 0 0 34px; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+    font-weight: 600; font-size: 15px; padding: 12px 20px; border-radius: 10px; transition: transform .12s, background .15s, border-color .15s;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); }
+  .btn.primary:hover { background: color-mix(in srgb, var(--accent) 88%, black); }
+  .btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn.ghost:hover { border-color: var(--muted); }
+  #copyEmail { font-family: inherit; border: none; cursor: pointer; }
+
+  /* ---- Terminal ---- */
+  .term {
+    margin-top: 46px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; max-width: 560px;
+  }
+  .term-bar { display: flex; align-items: center; gap: 7px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .term-bar i { width: 11px; height: 11px; border-radius: 50%; background: var(--border); display: inline-block; }
+  .term-bar span { margin-left: 8px; color: var(--muted); font-family: var(--mono); font-size: 12.5px; }
+  .term-body { font-family: var(--mono); font-size: 14px; line-height: 1.9; padding: 18px 20px; min-height: 168px; white-space: pre-wrap; }
+  .term-body .p { color: var(--accent); }
+  .term-body .o { color: var(--muted); }
+  .cursor { display: inline-block; width: 8px; height: 1.05em; background: var(--accent); vertical-align: -2px; animation: blink 1.05s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .cursor { animation: none; } }
+
+  /* ---- Section frame ---- */
+  section { padding: 68px 0; border-top: 1px solid var(--border); }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 40px; gap: 16px; }
+  .sec-head h2 { font-family: var(--disp); font-weight: 700; font-size: clamp(1.6rem, 4vw, 2.2rem); letter-spacing: -.02em; margin: 0; }
+  .sec-head .aside { color: var(--muted); font-size: 15px; }
+
+  /* ---- Work: two-up grid of equal cards ---- */
+  .work-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .proj {
+    display: flex; flex-direction: column;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 28px 24px; box-shadow: var(--shadow);
+    text-decoration: none;
+  }
+  .proj h3 { font-family: var(--disp); font-weight: 700; font-size: 1.4rem; letter-spacing: -.015em; margin: 0 0 10px; transition: color .15s; }
+  .proj:hover h3 { color: var(--accent); }
+  .proj p { color: var(--muted); margin: 0 0 16px; font-size: 15.5px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 7px; }
+  .tag { font-family: var(--mono); font-size: 12px; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 3px 11px; }
+  .proj .go { color: var(--muted); font-size: 14px; font-weight: 600; white-space: nowrap; align-self: center; transition: color .15s; }
+  .proj:hover .go { color: var(--accent); }
+  .proj-links { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 16px; }
+  .proj-links a { font-size: 14px; font-weight: 600; color: var(--muted); text-decoration: none; transition: color .15s; }
+  .proj-links a:hover { color: var(--accent); }
+  @media (max-width: 620px) {
+    .work-list { grid-template-columns: 1fr; }
+  }
+
+  /* ---- About ---- */
+  .about-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 44px; }
+  @media (max-width: 720px) { .about-grid { grid-template-columns: 1fr; gap: 32px; } }
+  .about p { margin: 0 0 16px; max-width: 60ch; }
+  .about p:last-child { margin-bottom: 0; }
+  .skills h4 { font-size: 13px; color: var(--muted); font-weight: 600; margin: 0 0 8px; }
+  .skills .group { margin-bottom: 20px; }
+  .skills .group:last-child { margin-bottom: 0; }
+  .skills .line { font-family: var(--mono); font-size: 14px; line-height: 1.9; }
+
+  /* ---- Contact ---- */
+  .contact { text-align: left; }
+  .contact h2 { font-family: var(--disp); font-weight: 800; font-size: clamp(2rem, 5.5vw, 3.2rem); letter-spacing: -.03em; margin: 0 0 18px; max-width: 16ch; }
+  .contact p { color: var(--muted); max-width: 50ch; margin: 0 0 28px; font-size: 1.08rem; }
+  .socials { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 30px; }
+  .socials a { color: var(--muted); text-decoration: none; font-weight: 500; font-size: 15px; transition: color .15s; }
+  .socials a:hover { color: var(--text); }
+
+  footer { border-top: 1px solid var(--border); padding: 28px 0 40px; color: var(--muted); font-size: 14px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+</style>
 </head>
 <body>
-  <div class="portfolio">
 
-    <!-- ===== HEADER ===== -->
-    <div class="header">
-      <div class="name-title">
-        <h1>Rohini R</h1>
-        <span class="badge"><i class="fas fa-graduation-cap" style="margin-right: 6px;"></i>B.E. Information Science · 2027</span>
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="mark" href="#top"><span class="dot"></span>Rohini R</a>
+    <nav class="nav-links">
+      <a class="link" href="#work">Work</a>
+      <a class="link" href="#about">About</a>
+      <a class="link" href="#contact">Contact</a>
+      <button class="toggle" id="themeBtn" aria-label="Switch color theme" title="Switch theme">◐</button>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap">
+    <!-- HERO -->
+    <div class="hero">
+      <h1>I build reliable backend systems.</h1>
+      <p class="lede">I like the parts of software that have to stay correct under load, under attack, and when the input is messy — distributed systems, security, and data pipelines. I build things I can measure, not just assert.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="#work">View work</a>
+        <a class="btn ghost" href="#contact">Email me</a>
       </div>
-      <div class="header-actions">
-        <div class="contact-links">
-          <a href="#"><i class="fab fa-github"></i> github</a>
-          <a href="#"><i class="fab fa-linkedin"></i> linkedin</a>
-          <a href="#"><i class="fas fa-envelope"></i> email</a>
-        </div>
-        <!-- Dark mode toggle button -->
-        <button id="themeToggle" class="theme-btn" aria-label="Toggle dark mode">
-          <i class="fas fa-moon"></i>
-        </button>
+
+      <div class="term" aria-hidden="true">
+        <div class="term-bar"><i></i><i></i><i></i><span>zsh — ~/portfolio</span></div>
+        <div class="term-body" id="term"></div>
       </div>
     </div>
+  </div>
 
-    <!-- ===== MAIN GRID ===== -->
-    <div class="grid-2col">
+  <!-- WORK -->
+  <section id="work">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Things I have built</h2>
+      </div>
 
-      <!-- LEFT COLUMN -->
-      <div class="left-panel">
-
-        <!-- Education -->
-        <div>
-          <div class="section-title"><i class="fas fa-university"></i> Education</div>
-          <div class="edu-item">
-            <h4>BMS College of Engineering</h4>
-            <div class="meta">B.E. Information Science &amp; Engineering · 2023–2027</div>
-            <span class="score">CGPA: 9.1</span>
-          </div>
-          <div class="edu-item">
-            <h4>Vidya Mandir IND PU College</h4>
-            <div class="meta">12th State Board · 2021–2023</div>
-            <span class="score">95%</span>
-          </div>
-          <div class="edu-item">
-            <h4>B.P. Indian Public School</h4>
-            <div class="meta">10th ICSE · 2021</div>
-            <span class="score">95%</span>
-          </div>
-        </div>
-
-        <!-- Technical Skills -->
-        <div>
-          <div class="section-title"><i class="fas fa-code"></i> Technical Skills</div>
-
-          <div class="skill-category">
-            <strong>Languages</strong>
-            <div class="skill-tags">
-              <span class="skill-tag">C++</span><span class="skill-tag">Java</span><span class="skill-tag">Python</span>
-              <span class="skill-tag">JavaScript</span><span class="skill-tag">Node.js</span><span class="skill-tag">React.js</span>
-            </div>
-          </div>
-
-          <div class="skill-category">
-            <strong>Databases &amp; Tools</strong>
-            <div class="skill-tags">
-              <span class="skill-tag">SQL</span><span class="skill-tag">NoSQL</span><span class="skill-tag">MongoDB</span>
-              <span class="skill-tag">Thunder Client</span><span class="skill-tag">Postman</span>
-            </div>
-          </div>
-
-          <div class="skill-category">
-            <strong>Core CS</strong>
-            <div class="skill-tags">
-              <span class="skill-tag">DSA</span><span class="skill-tag">CN</span><span class="skill-tag">OS</span>
-              <span class="skill-tag">DBMS</span><span class="skill-tag">ML</span><span class="skill-tag">Computer Arch.</span>
-            </div>
-          </div>
-
-          <div class="skill-category">
-            <strong>Web &amp; Tools</strong>
-            <div class="skill-tags">
-              <span class="skill-tag">HTML</span><span class="skill-tag">CSS</span><span class="skill-tag">Git</span>
-              <span class="skill-tag">GitHub</span><span class="skill-tag">Android Studio</span>
-            </div>
-          </div>
-
-          <div class="skill-category">
-            <strong>Domain of Interest</strong>
-            <div>
-              <span class="domain-badge">Cybersecurity</span>
-              <span class="domain-badge">Full Stack Development</span>
-            </div>
-          </div>
-
-          <div class="skill-category">
-            <strong>Languages</strong>
-            <div>
-              <span class="lang-item">English</span>
-              <span class="lang-item">Kannada</span>
-              <span class="lang-item">Hindi</span>
-              <span class="lang-item">Japanese <span style="font-weight:300; font-size:0.7rem;">(Beginner)</span></span>
+      <div class="work-list">
+        <div class="proj">
+          <div>
+            <h3>Secure IoT Monitoring Platform</h3>
+            <p>A security-first platform for monitoring IoT sensor fleets. Every device has its own X.509 identity, all traffic runs over mutual TLS, access is role-controlled, and credentials can be revoked live. It ships with a deliberately insecure twin and an automated attack runner that proves each defense — the same attack succeeds on the insecure stack and is blocked on the secure one. Sustained ~1,700 msg/s with 100% of unauthorized messages blocked in testing.</p>
+            <div class="tags"><span class="tag">Python</span><span class="tag">FastAPI</span><span class="tag">MQTT / mTLS</span><span class="tag">InfluxDB</span><span class="tag">Grafana</span><span class="tag">Docker</span></div>
+            <div class="proj-links">
+              <a href="https://github.com/Rohini-R008/secure-iot-platform" target="_blank" rel="noopener">GitHub ↗</a>
+              <a href="https://youtu.be/o3JpkNYN8gE" target="_blank" rel="noopener">Demo video ↗</a>
             </div>
           </div>
         </div>
 
-        <!-- Certifications -->
-        <div>
-          <div class="section-title"><i class="fas fa-certificate"></i> Certifications</div>
-          <div class="cert-item">
-            <i class="fab fa-google"></i> Google Cybersecurity · Coursera
+        <div class="proj">
+          <div>
+            <h3>DevAgent — autonomous PR reviewer</h3>
+            <p>An AI developer agent that reviews GitHub pull requests through a LangGraph + LLM pipeline triggered by webhooks, and diagnoses GPU-memory issues in PyTorch/CUDA code using static analysis plus RAG retrieval over the codebase. Everything it does is visible in a Next.js dashboard.</p>
+            <div class="tags"><span class="tag">FastAPI</span><span class="tag">LangGraph</span><span class="tag">ChromaDB</span><span class="tag">Next.js</span><span class="tag">TypeScript</span></div>
+            <div class="proj-links">
+              <a href="https://github.com/Rohini-R008/devagent_main" target="_blank" rel="noopener">GitHub ↗</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="proj">
+          <div>
+            <h3>Cloud-Deployed Data Pipeline</h3>
+            <p>A production-style pipeline that ingests messy, mismatched CSV sources, validates every row with Pydantic, loads clean data into cloud Postgres, and quarantines bad rows instead of silently dropping them. It runs unattended on a daily GitHub Actions schedule and serves the data through a live FastAPI API.</p>
+            <div class="tags"><span class="tag">Python</span><span class="tag">pandas</span><span class="tag">Pydantic</span><span class="tag">PostgreSQL</span><span class="tag">GitHub Actions</span></div>
+            <div class="proj-links">
+              <a href="https://github.com/Rohini-R008/cloud-data-pipeline" target="_blank" rel="noopener">GitHub ↗</a>
+              <a href="https://cloud-data-pipeline-api.onrender.com/docs" target="_blank" rel="noopener">Live API ↗</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="proj">
+          <div>
+            <h3>Distributed Rate Limiter</h3>
+            <p>A rate-limiting and API abuse-detection gateway in Spring Boot, backed by Redis with atomic Lua scripts and Postgres. I tracked down and fixed a time-of-check-to-time-of-use concurrency race with a compare-and-swap loop, implemented both token-bucket and sliding-window strategies, scaled it from a single node to multiple instances, and load-tested it with k6.</p>
+            <div class="tags"><span class="tag">Java</span><span class="tag">Spring Boot</span><span class="tag">Redis</span><span class="tag">PostgreSQL</span><span class="tag">k6</span></div>
+            <div class="proj-links">
+              <a href="https://github.com/Rohini-R008/rate-limiter-service" target="_blank" rel="noopener">GitHub ↗</a>
+            </div>
           </div>
         </div>
       </div>
-
-      <!-- RIGHT COLUMN -->
-      <div class="right-panel">
-
-        <div>
-          <div class="section-title"><i class="fas fa-folder-open"></i> Projects</div>
-
-          <!-- Project 1 -->
-          <div class="project-card">
-            <h3>
-              Workout Tracker Application
-              <span class="stack">MERN · JWT</span>
-            </h3>
-            <ul>
-              <li>Full-stack MERN app with CRUD operations for workout sessions.</li>
-              <li>JWT authentication, protected routes, middleware-based authorization.</li>
-              <li>RESTful APIs with Express + Node, MongoDB via Mongoose.</li>
-              <li>React frontend: React Router, Context API, custom hooks for auth &amp; data.</li>
-            </ul>
-          </div>
-
-          <!-- Project 2 -->
-          <div class="project-card">
-            <h3>
-              College Portal &amp; Performance Prediction
-              <span class="stack">Python · ML · SQLite</span>
-            </h3>
-            <ul>
-              <li>College management portal for student records, attendance, academics.</li>
-              <li>ML model with Scikit-learn to predict student performance.</li>
-              <li>Data processing with Pandas &amp; NumPy, SQLite for persistent storage.</li>
-              <li>Modular Python code with functions/classes for scalability.</li>
-            </ul>
-          </div>
-
-          <!-- Project 3 -->
-          <div class="project-card">
-            <h3>
-              MediQuick Website
-              <span class="stack">HTML · CSS · JS · MySQL</span>
-            </h3>
-            <ul>
-              <li>Web app for online medicine ordering &amp; doctor appointment scheduling.</li>
-              <li>User-friendly interface for patients to browse medicines and book appointments.</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Extra interest box -->
-        <div class="interest-box">
-          <div style="display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center;">
-            <span class="interest-pill"><i class="fas fa-shield-alt"></i> Cybersecurity</span>
-            <span class="interest-pill"><i class="fas fa-robot"></i> ML · AI</span>
-            <span style="color: #1e4a6a;"><i class="fas fa-bolt"></i> Full‑stack · MERN</span>
-          </div>
-          <p style="margin-top: 0.6rem; font-size: 0.9rem; color: #1a3852;">
-            <i class="fas fa-circle" style="color: #2a7ab0; font-size: 0.4rem; vertical-align: middle; margin-right: 4px;"></i>
-            Passionate about secure systems and intelligent applications.
-          </p>
-        </div>
-
-      </div> <!-- right-panel -->
-    </div> <!-- grid-2col -->
-
-    <hr style="margin-top: 2rem; border-color: #dde6f0;" />
-    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #3b5b7a; padding-top: 0.2rem;">
-      <span><i class="far fa-copyright"></i> Rohini R · Portfolio</span>
     </div>
-  </div> <!-- portfolio -->
+  </section>
 
-  <!-- External JavaScript -->
-  <script src="script.js"></script>
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="wrap about-grid">
+      <div class="about">
+        <div class="sec-head" style="margin-bottom:24px"><h2>About</h2></div>
+        <p>I'm a software engineering student in Bengaluru, drawn to backend and distributed systems — the parts of software that have to stay correct under load, under attack, and when the input is messy.</p>
+        <p>My projects share a theme: reliability you can verify rather than just claim. I've built a security-first IoT platform that proves each defense by running the same attack against a secure and an insecure stack, a rate limiter I hardened against a concurrency race and load-tested from one node to many, and a data pipeline that quarantines bad rows instead of dropping them. I like measuring what a system actually does.</p>
+        <p>I work mainly in Python, Java, and TypeScript, and I enjoy the whole path from an API and its database down to the Docker and CI that ship it. Right now I'm going deeper on distributed systems and AI-powered developer tooling.</p>
+      </div>
+      <div class="skills">
+        <div class="sec-head" style="margin-bottom:24px"><h2 style="font-size:1.3rem">Toolkit</h2></div>
+        <div class="group">
+          <h4>Languages</h4>
+          <div class="line">Python, Java, TypeScript, SQL</div>
+        </div>
+        <div class="group">
+          <h4>Backend</h4>
+          <div class="line">FastAPI, Spring Boot, REST &amp; webhooks</div>
+        </div>
+        <div class="group">
+          <h4>Data</h4>
+          <div class="line">PostgreSQL, Redis, InfluxDB, ChromaDB</div>
+        </div>
+        <div class="group">
+          <h4>Frontend</h4>
+          <div class="line">Next.js, React, Tailwind CSS</div>
+        </div>
+        <div class="group">
+          <h4>Infra &amp; CI/CD</h4>
+          <div class="line">Docker, GitHub Actions, nginx, k6</div>
+        </div>
+        <div class="group">
+          <h4>AI &amp; security</h4>
+          <div class="line">LangGraph, RAG, mTLS / X.509, RBAC</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap contact">
+      <h2>Let's build something.</h2>
+      <p>I'm open to full-time roles and interesting freelance work. The fastest way to reach me is email.</p>
+      <button class="btn primary" id="copyEmail" type="button" data-email="rohinir0809@gmail.com">rohinir0809@gmail.com</button>
+      <div class="socials">
+        <a href="https://github.com/Rohini-R008" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/rohini-r-515635363" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;width:100%;max-width:940px;padding:0 24px;">
+    <span>© <span id="year"></span> Rohini R</span>
+  </div>
+</footer>
+
+<script>
+  // Year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // In-page nav: scroll smoothly instead of letting the browser navigate to "#id".
+  // In the sandboxed preview a plain #anchor is treated as an external URL, which
+  // triggers the "leaving Claude" popup — handling it in JS avoids that entirely.
+  (function () {
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var links = document.querySelectorAll('a[href^="#"]');
+    for (var i = 0; i < links.length; i++) {
+      links[i].addEventListener('click', function (e) {
+        e.preventDefault();
+        var id = this.getAttribute('href').slice(1);
+        var top = 0;
+        if (id && id !== 'top') {
+          var target = document.getElementById(id);
+          if (!target) return;
+          top = target.getBoundingClientRect().top + window.pageYOffset - 72;
+        }
+        window.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
+      });
+    }
+  })();
+
+  // Theme toggle — persists per viewer, degrades gracefully
+  (function () {
+    var root = document.documentElement, btn = document.getElementById('themeBtn');
+    var saved = null;
+    try { saved = localStorage.getItem('theme'); } catch (e) {}
+    if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
+    root.removeAttribute('data-theme-init');
+    function current() {
+      if (root.getAttribute('data-theme')) return root.getAttribute('data-theme');
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    btn.addEventListener('click', function () {
+      var next = current() === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+    });
+  })();
+
+  // Copy-email button. mailto: is blocked inside the preview frame, and copying
+  // the address works reliably both here and on a hosted site.
+  (function () {
+    var btn = document.getElementById('copyEmail');
+    if (!btn) return;
+    var label = btn.textContent;
+    function confirmCopied() {
+      btn.textContent = 'Copied to clipboard ✓';
+      setTimeout(function () { btn.textContent = label; }, 1800);
+    }
+    function fallbackCopy(email) {
+      try {
+        var t = document.createElement('textarea');
+        t.value = email; t.setAttribute('readonly', '');
+        t.style.position = 'absolute'; t.style.left = '-9999px';
+        document.body.appendChild(t); t.select();
+        document.execCommand('copy'); document.body.removeChild(t);
+        confirmCopied();
+      } catch (e) { /* leave the address visible so it can be copied by hand */ }
+    }
+    btn.addEventListener('click', function () {
+      var email = btn.getAttribute('data-email');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).then(confirmCopied, function () { fallbackCopy(email); });
+      } else {
+        fallbackCopy(email);
+      }
+    });
+  })();
+  (function () {
+    var el = document.getElementById('term');
+    var lines = [
+      { t: '~ whoami\n',                     c: 'p' },
+      { t: 'Rohini R — Software Engineering Student\n', c: 'o' },
+      { t: '~ ls projects/\n',               c: 'p' },
+      { t: 'secure-iot  rate-limiter  data-pipeline  devagent\n', c: 'o' },
+      { t: '~ cat stack.txt\n',              c: 'p' },
+      { t: 'Python, Java, TypeScript, Docker, PostgreSQL', c: 'o' }
+    ];
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function span(cls, text) {
+      var s = document.createElement('span');
+      if (cls) s.className = cls;
+      s.textContent = text;
+      return s;
+    }
+    var cursor = span('cursor', '');
+
+    if (reduce) {
+      lines.forEach(function (l) { el.appendChild(span(l.c, l.t)); });
+      el.appendChild(cursor);
+      return;
+    }
+
+    var li = 0, ci = 0, hold = null;
+    el.appendChild(cursor);
+    function step() {
+      if (li >= lines.length) return;
+      var line = lines[li];
+      if (ci === 0) { hold = span(line.c, ''); el.insertBefore(hold, cursor); }
+      hold.textContent += line.t[ci++];
+      if (ci >= line.t.length) { li++; ci = 0; setTimeout(step, line.c === 'p' ? 220 : 90); }
+      else { setTimeout(step, line.t[ci-1] === '\n' ? 40 : 26); }
+    }
+    setTimeout(step, 400);
+  })();
+</script>
 </body>
 </html>
